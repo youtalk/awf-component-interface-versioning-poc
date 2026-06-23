@@ -20,6 +20,10 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 ament_target_dependencies(${PROJECT_NAME} INTERFACE
   rclcpp std_srvs autoware_perception_msgs autoware_planning_msgs)
 
+add_executable(manifest_dump src/manifest_dump.cpp)
+target_link_libraries(manifest_dump ${PROJECT_NAME})
+install(TARGETS manifest_dump DESTINATION lib/${PROJECT_NAME})
+
 install(DIRECTORY include/ DESTINATION include)
 install(TARGETS ${PROJECT_NAME} EXPORT export_${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
@@ -32,6 +36,9 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_concept test/test_concept.cpp)
   target_link_libraries(test_concept ${PROJECT_NAME})
+
+  ament_add_gtest(test_manifest test/test_manifest.cpp)
+  target_link_libraries(test_manifest ${PROJECT_NAME})
 endif()
 
 ament_package()
