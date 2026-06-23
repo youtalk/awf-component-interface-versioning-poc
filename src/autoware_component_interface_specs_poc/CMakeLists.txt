@@ -29,6 +29,9 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   ament_add_gtest(test_version test/test_version.cpp)
   target_link_libraries(test_version ${PROJECT_NAME})
+
+  ament_add_gtest(test_concept test/test_concept.cpp)
+  target_link_libraries(test_concept ${PROJECT_NAME})
 endif()
 
 ament_package()
