@@ -22,6 +22,10 @@ install(TARGETS ${PROJECT_NAME} EXPORT export_${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp autoware_common_msgs_poc)
 
+add_executable(admission_node src/admission_node.cpp)
+target_link_libraries(admission_node ${PROJECT_NAME})
+install(TARGETS admission_node DESTINATION lib/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   ament_add_gtest(test_admission_rule test/test_admission_rule.cpp)
