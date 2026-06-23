@@ -54,7 +54,7 @@ TEST(AdmissionRule, rejects_higher_required_major)
   const auto results = adm::evaluate({provider(2, 1), consumer(3, 3)});
   ASSERT_EQ(results.size(), 1u);
   EXPECT_FALSE(results[0].accepted);
-  EXPECT_NE(results[0].error_code, 0);
+  EXPECT_EQ(results[0].error_code, 1);
   EXPECT_NE(results[0].reason.find("MAJOR mismatch"), std::string::npos);
 }
 
@@ -70,6 +70,7 @@ TEST(AdmissionRule, rejects_when_min_minor_unmet)
   const auto results = adm::evaluate({provider(2, 1), consumer(2, 2, /*min_minor=*/5)});
   ASSERT_EQ(results.size(), 1u);
   EXPECT_FALSE(results[0].accepted);
+  EXPECT_EQ(results[0].error_code, 1);
 }
 
 TEST(AdmissionRule, no_result_without_provider)
