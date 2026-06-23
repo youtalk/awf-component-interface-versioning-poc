@@ -27,4 +27,11 @@ ament_target_dependencies(consumer_node
 
 install(TARGETS provider_node consumer_node DESTINATION lib/${PROJECT_NAME})
 
+if(BUILD_TESTING)
+  find_package(launch_testing_ament_cmake REQUIRED)
+  find_package(ament_cmake_pytest REQUIRED)
+  ament_add_pytest_test(test_handshake_launch test/test_handshake_launch.py
+    TIMEOUT 120)
+endif()
+
 ament_package()
