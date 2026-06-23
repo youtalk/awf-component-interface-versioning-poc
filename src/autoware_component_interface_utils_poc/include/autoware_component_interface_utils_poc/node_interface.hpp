@@ -46,7 +46,7 @@ public:
   }
 
   template <specs::ServiceSpec S>
-  void register_provided_srv()
+  void register_provided_service()
   {
     autoware_common_msgs_poc::msg::ProvidedInterface p;
     p.ns = std::string(specs::namespace_of<S>());
@@ -60,7 +60,7 @@ public:
   }
 
   template <specs::ServiceSpec S>
-  void register_required_srv()
+  void register_required_service()
   {
     autoware_common_msgs_poc::msg::RequiredInterface r;
     r.ns = std::string(specs::namespace_of<S>());

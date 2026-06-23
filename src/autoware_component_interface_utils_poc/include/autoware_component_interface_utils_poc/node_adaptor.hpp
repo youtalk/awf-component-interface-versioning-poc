@@ -41,14 +41,14 @@ public:
   template <specs::ServiceSpec S, class Callback>
   typename rclcpp::Service<typename S::Service>::SharedPtr create_service(Callback && cb)
   {
-    iface_->register_provided_srv<S>();
+    iface_->register_provided_service<S>();
     return node_->create_service<typename S::Service>(S::name, std::forward<Callback>(cb));
   }
 
   template <specs::ServiceSpec S>
   typename rclcpp::Client<typename S::Service>::SharedPtr create_client()
   {
-    iface_->register_required_srv<S>();
+    iface_->register_required_service<S>();
     return node_->create_client<typename S::Service>(S::name);
   }
 
