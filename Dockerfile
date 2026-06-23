@@ -24,7 +24,7 @@ COPY src/ /ws/src/
 
 RUN source /opt/ros/jazzy/setup.bash \
     && apt-get update \
-    && rosdep install --from-paths src --ignore-src -y --rosdistro jazzy || true \
+    && rosdep install --from-paths src --ignore-src -y --rosdistro jazzy \
     && rm -rf /var/lib/apt/lists/*
 
 RUN source /opt/ros/jazzy/setup.bash \
