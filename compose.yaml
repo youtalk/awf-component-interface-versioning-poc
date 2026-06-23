@@ -1,0 +1,14 @@
+services:
+  # Build + test helper (fast tier). Profiled, so `docker compose up` stays
+  # reserved for the live demo services added in Task 12.
+  checks:
+    build:
+      context: .
+    image: awf-component-interface-versioning-poc:latest
+    profiles: ["unit"]   # fast tier; `docker compose run --rm checks` auto-enables it
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=1
+    command: >
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash &&
+      colcon test --event-handlers console_direct+ && colcon test-result --verbose"

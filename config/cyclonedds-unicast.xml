@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config">
+  <Domain Id="any">
+    <General>
+      <Interfaces><NetworkInterface autodetermine="true"/></Interfaces>
+      <AllowMulticast>false</AllowMulticast>
+    </General>
+    <Discovery>
+      <ParticipantIndex>auto</ParticipantIndex>
+      <MaxAutoParticipantIndex>30</MaxAutoParticipantIndex>
+      <Peers>
+        <Peer Address="provider"/>
+        <Peer Address="consumer"/>
+        <Peer Address="admission"/>
+        <Peer Address="test"/>
+      </Peers>
+    </Discovery>
+  </Domain>
+</CycloneDDS>
