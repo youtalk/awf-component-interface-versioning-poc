@@ -2,4 +2,4 @@ repositories:
   autoware_msgs:
     type: git
     url: https://github.com/autowarefoundation/autoware_msgs.git
-    version: main # PoC: pin to a known-good commit before sharing
+    version: bb8e7bf5d97168663e0e7b357929e4fcdbd3a967 # main

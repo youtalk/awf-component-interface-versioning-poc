@@ -20,8 +20,9 @@ docker compose run --rm --build checks
 
 # Inter-container ACCEPT: provider + consumer (same MAJOR) + admission, each its
 # own container on a unicast CycloneDDS network
+# (--build rebuilds the image with the pinned deps; required on a clean clone)
 CONSUMER_MAJOR=2 EXPECT_ACCEPTED=true \
-  docker compose --profile test up --abort-on-container-exit --exit-code-from test
+  docker compose --profile test up --build --abort-on-container-exit --exit-code-from test
 
 # Inter-container REJECT: consumer built against MAJOR 3, provider at 2.1.0
 CONSUMER_MAJOR=3 EXPECT_ACCEPTED=false \

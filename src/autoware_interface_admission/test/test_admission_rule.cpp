@@ -71,6 +71,7 @@ TEST(AdmissionRule, rejects_when_min_minor_unmet)
   ASSERT_EQ(results.size(), 1u);
   EXPECT_FALSE(results[0].accepted);
   EXPECT_EQ(results[0].error_code, 1);
+  EXPECT_NE(results[0].reason.find("MINOR mismatch"), std::string::npos);
 }
 
 TEST(AdmissionRule, no_result_without_provider)

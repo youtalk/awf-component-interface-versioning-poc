@@ -60,9 +60,16 @@ inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate(
         res.accepted = false;
         res.error_code = 1;
         res.provider_node = first.node;
-        res.reason = "MAJOR mismatch: required " + std::to_string(r.accept_major_min) + ".." +
-                     std::to_string(r.accept_major_max) + ", provided " +
-                     std::to_string(first.p.major);
+        const bool major_in_range = r.accept_major_min <= first.p.major &&
+                                    first.p.major <= r.accept_major_max;
+        if (!major_in_range) {
+          res.reason = "MAJOR mismatch: required " + std::to_string(r.accept_major_min) + ".." +
+                       std::to_string(r.accept_major_max) + ", provided " +
+                       std::to_string(first.p.major);
+        } else {
+          res.reason = "MINOR mismatch: required >=" + std::to_string(r.min_minor) +
+                       ", provided " + std::to_string(first.p.minor);
+        }
       }
       results.push_back(res);
     }

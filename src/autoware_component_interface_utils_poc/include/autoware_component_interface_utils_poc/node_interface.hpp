@@ -77,8 +77,10 @@ public:
 
   void broadcast(rclcpp::Node * node, const std::string & owner)
   {
+    if (pub_) { return; }  // re-entry guard: a second call is a no-op
     manifest_.owner = owner;
     manifest_.node_name = node->get_fully_qualified_name();
+    // depth 1: one latched manifest per node; the admission subscriber uses depth 100 to retain one-per-publisher
     rclcpp::QoS qos(1);
     qos.reliable().transient_local();
     pub_ = node->create_publisher<autoware_common_msgs_poc::msg::InterfaceManifest>(
