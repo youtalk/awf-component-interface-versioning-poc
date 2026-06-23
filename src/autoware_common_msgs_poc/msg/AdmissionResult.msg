@@ -1,6 +1,18 @@
+# Admission verdict for one consumer<-provider interface pairing.
+# The verdict is a single unified code: 0 = accepted, non-zero = IF incompatibility.
+# accepted == (code == ACCEPTED); the human-readable reason is derivable from the code
+# off-wire, and the concrete versions are already carried in the broadcast InterfaceManifest.
+#
+# In the production design this `code` is replaced by the Error Code Foundation mechanism:
+# it becomes the unified error code raised on the reserved IF-incompatibility domain, so the
+# admission verdict reuses the same code space, off-wire canonical/name derivation, and
+# downstream MRM wiring as every other Autoware error. The constants below are a minimal,
+# self-contained PoC stand-in for that domain's values.
+uint16 ACCEPTED = 0
+uint16 MAJOR_MISMATCH = 1
+uint16 MINOR_MISMATCH = 2
+
 string consumer_node
 string interface_name
 string provider_node
-bool accepted
-uint16 error_code
-string reason
+uint16 code

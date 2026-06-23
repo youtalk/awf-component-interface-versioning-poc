@@ -40,7 +40,7 @@ docker compose up
 | C2 | per-namespace `Version` recovered from a spec type via ADL, structs untouched | `test_concept` |
 | C3 | one manifest auto-derived from the `Specs` tuple + the `create_*` choke point | `test_manifest` + `test_accumulate` |
 | C4 | `transient_local` handshake discovered across containers (incl. late join) | inter-container accept + late-join run |
-| C5 | MAJOR mismatch rejected across containers → `AdmissionResult{accepted=false}` | inter-container reject run |
+| C5 | MAJOR mismatch rejected across containers → `AdmissionResult.code = MAJOR_MISMATCH` (non-zero) | inter-container reject run |
 
 ## Layout
 

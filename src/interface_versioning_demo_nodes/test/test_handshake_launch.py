@@ -68,14 +68,11 @@ def _collect_result(timeout_s):
 def test_accept_same_major():
     result = _collect_result(20)
     assert result is not None, "no AdmissionResult for the perception interface"
-    assert result.accepted is True
-    assert result.error_code == 0
+    assert result.code == AdmissionResult.ACCEPTED
 
 
 @pytest.mark.launch(fixture=reject_description)
 def test_reject_higher_major():
     result = _collect_result(20)
     assert result is not None, "no AdmissionResult for the perception interface"
-    assert result.accepted is False
-    assert result.error_code != 0
-    assert "MAJOR mismatch" in result.reason
+    assert result.code == AdmissionResult.MAJOR_MISMATCH

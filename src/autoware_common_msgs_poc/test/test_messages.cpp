@@ -24,9 +24,7 @@ TEST(Messages, manifest_holds_provided_and_required)
 TEST(Messages, admission_result_fields)
 {
   autoware_common_msgs_poc::msg::AdmissionResult a;
-  a.accepted = false;
-  a.error_code = 1;
-  a.reason = "MAJOR mismatch";
-  EXPECT_FALSE(a.accepted);
-  EXPECT_EQ(a.error_code, 1);
+  a.code = autoware_common_msgs_poc::msg::AdmissionResult::MAJOR_MISMATCH;
+  EXPECT_EQ(a.code, 1);
+  EXPECT_NE(a.code, autoware_common_msgs_poc::msg::AdmissionResult::ACCEPTED);
 }

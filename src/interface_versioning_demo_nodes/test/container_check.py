@@ -40,12 +40,9 @@ def main():
     if verdict is None:
         print("FAIL: no AdmissionResult received across containers", flush=True)
         sys.exit(2)
-    print(
-        f"verdict: accepted={verdict.accepted} error_code={verdict.error_code} "
-        f"reason='{verdict.reason}'",
-        flush=True,
-    )
-    if verdict.accepted is EXPECT_ACCEPTED:
+    accepted = verdict.code == AdmissionResult.ACCEPTED
+    print(f"verdict: code={verdict.code} accepted={accepted}", flush=True)
+    if accepted == EXPECT_ACCEPTED:
         print("PASS", flush=True)
         sys.exit(0)
     print(f"FAIL: expected accepted={EXPECT_ACCEPTED}", flush=True)

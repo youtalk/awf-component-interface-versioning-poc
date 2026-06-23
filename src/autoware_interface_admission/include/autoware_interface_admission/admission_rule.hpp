@@ -3,6 +3,7 @@
 #include "autoware_common_msgs_poc/msg/admission_result.hpp"
 #include "autoware_common_msgs_poc/msg/interface_manifest.hpp"
 
+#include <cstdint>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -51,30 +52,38 @@ inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate(
       res.consumer_node = m.node_name;
       res.interface_name = r.interface_name;
       if (match != nullptr) {
-        res.accepted = true;
-        res.error_code = 0;
+        res.code = AdmissionResult::ACCEPTED;
         res.provider_node = match->node;
-        res.reason = "compatible";
       } else {
         const auto & first = it->second.front();
-        res.accepted = false;
-        res.error_code = 1;
         res.provider_node = first.node;
-        const bool major_in_range = r.accept_major_min <= first.p.major &&
-                                    first.p.major <= r.accept_major_max;
-        if (!major_in_range) {
-          res.reason = "MAJOR mismatch: required " + std::to_string(r.accept_major_min) + ".." +
-                       std::to_string(r.accept_major_max) + ", provided " +
-                       std::to_string(first.p.major);
-        } else {
-          res.reason = "MINOR mismatch: required >=" + std::to_string(r.min_minor) +
-                       ", provided " + std::to_string(first.p.minor);
-        }
+        const bool major_in_range =
+          r.accept_major_min <= first.p.major && first.p.major <= r.accept_major_max;
+        res.code =
+          major_in_range ? AdmissionResult::MINOR_MISMATCH : AdmissionResult::MAJOR_MISMATCH;
       }
       results.push_back(res);
     }
   }
   return results;
+}
+
+// The human-readable reason is derived from the verdict code off-wire — it is not
+// carried on AdmissionResult (the code is the single source of identity, mirroring
+// the unified-code approach of the Error Code Foundation).
+inline const char * verdict_text(std::uint16_t code)
+{
+  using autoware_common_msgs_poc::msg::AdmissionResult;
+  switch (code) {
+    case AdmissionResult::ACCEPTED:
+      return "accepted";
+    case AdmissionResult::MAJOR_MISMATCH:
+      return "MAJOR mismatch";
+    case AdmissionResult::MINOR_MISMATCH:
+      return "MINOR mismatch";
+    default:
+      return "unknown";
+  }
 }
 
 }  // namespace autoware::interface_admission
