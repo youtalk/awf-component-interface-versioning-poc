@@ -23,14 +23,14 @@ public:
   }
 
   template <specs::InterfaceSpec S>
-  typename rclcpp::Publisher<typename S::Message>::SharedPtr create_pub()
+  typename rclcpp::Publisher<typename S::Message>::SharedPtr create_publisher()
   {
     iface_->register_provided<S>();
     return node_->create_publisher<typename S::Message>(S::name, get_qos<S>());
   }
 
   template <specs::InterfaceSpec S, class Callback>
-  typename rclcpp::Subscription<typename S::Message>::SharedPtr create_sub(
+  typename rclcpp::Subscription<typename S::Message>::SharedPtr create_subscription(
     Callback && cb, specs::AcceptMajor accept = specs::accept_major(specs::version_of<S>().major))
   {
     iface_->register_required<S>(accept);
@@ -39,14 +39,14 @@ public:
   }
 
   template <specs::ServiceSpec S, class Callback>
-  typename rclcpp::Service<typename S::Service>::SharedPtr create_srv(Callback && cb)
+  typename rclcpp::Service<typename S::Service>::SharedPtr create_service(Callback && cb)
   {
     iface_->register_provided_srv<S>();
     return node_->create_service<typename S::Service>(S::name, std::forward<Callback>(cb));
   }
 
   template <specs::ServiceSpec S>
-  typename rclcpp::Client<typename S::Service>::SharedPtr create_cli()
+  typename rclcpp::Client<typename S::Service>::SharedPtr create_client()
   {
     iface_->register_required_srv<S>();
     return node_->create_client<typename S::Service>(S::name);

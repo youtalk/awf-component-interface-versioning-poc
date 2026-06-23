@@ -20,7 +20,7 @@ public:
     const int consumer_major = declare_parameter<int>("consumer_major", 2);
     iface_ = std::make_shared<utils::NodeInterface>();
     utils::NodeAdaptor adaptor(this, iface_);
-    sub_ = adaptor.create_sub<specs::perception::ObjectRecognition>(
+    sub_ = adaptor.create_subscription<specs::perception::ObjectRecognition>(
       [this](autoware_perception_msgs::msg::PredictedObjects::SharedPtr) {
         if (++count_ % 25 == 0) {
           RCLCPP_INFO(get_logger(), "received %u messages", count_);

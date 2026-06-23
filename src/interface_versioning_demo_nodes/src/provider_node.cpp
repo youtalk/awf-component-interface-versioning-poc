@@ -19,7 +19,7 @@ public:
   {
     iface_ = std::make_shared<utils::NodeInterface>();
     utils::NodeAdaptor adaptor(this, iface_);
-    pub_ = adaptor.create_pub<specs::perception::ObjectRecognition>();
+    pub_ = adaptor.create_publisher<specs::perception::ObjectRecognition>();
     iface_->broadcast(this, "autoware");
     timer_ = create_wall_timer(
       std::chrono::milliseconds(200), [this]() {
