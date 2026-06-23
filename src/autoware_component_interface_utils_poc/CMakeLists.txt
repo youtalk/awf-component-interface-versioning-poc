@@ -28,6 +28,8 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   ament_add_gtest(test_accumulate test/test_accumulate.cpp)
   target_link_libraries(test_accumulate ${PROJECT_NAME})
+  ament_add_gtest(test_broadcast test/test_broadcast.cpp)
+  target_link_libraries(test_broadcast ${PROJECT_NAME})
 endif()
 
 ament_package()
