@@ -12,3 +12,50 @@ services:
     command: >
       bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash &&
       colcon test --event-handlers console_direct+ && colcon test-result --verbose"
+
+  # provider/consumer/admission are NOT profiled: `docker compose up` runs the live demo.
+  provider:
+    image: awf-component-interface-versioning-poc:latest
+    networks: [ddsnet]
+    environment: &dds_env
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=1
+      - CYCLONEDDS_URI=file:///ws/config/cyclonedds-unicast.xml
+    command: >
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash &&
+      ros2 run interface_versioning_demo_nodes provider_node"
+
+  consumer:
+    image: awf-component-interface-versioning-poc:latest
+    networks: [ddsnet]
+    environment: *dds_env
+    command: >
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash &&
+      ros2 run interface_versioning_demo_nodes consumer_node
+      --ros-args -p consumer_major:=${CONSUMER_MAJOR:-2}"
+
+  admission:
+    image: awf-component-interface-versioning-poc:latest
+    networks: [ddsnet]
+    environment: *dds_env
+    command: >
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash &&
+      ros2 run autoware_interface_admission admission_node"
+
+  test:                            # cross-container assertion (profiled "test")
+    image: awf-component-interface-versioning-poc:latest
+    profiles: ["test"]
+    depends_on: [provider, consumer, admission]
+    networks: [ddsnet]
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=1
+      - CYCLONEDDS_URI=file:///ws/config/cyclonedds-unicast.xml
+      - EXPECT_ACCEPTED=${EXPECT_ACCEPTED:-true}
+    command: >
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash &&
+      python3 install/interface_versioning_demo_nodes/lib/interface_versioning_demo_nodes/container_check.py"
+
+networks:
+  ddsnet:
+    driver: bridge

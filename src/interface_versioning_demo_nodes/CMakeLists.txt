@@ -26,6 +26,7 @@ ament_target_dependencies(consumer_node
   autoware_common_msgs_poc)
 
 install(TARGETS provider_node consumer_node DESTINATION lib/${PROJECT_NAME})
+install(PROGRAMS test/container_check.py DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(launch_testing_ament_cmake REQUIRED)
