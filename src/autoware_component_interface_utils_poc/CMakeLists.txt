@@ -30,6 +30,8 @@ if(BUILD_TESTING)
   target_link_libraries(test_accumulate ${PROJECT_NAME})
   ament_add_gtest(test_broadcast test/test_broadcast.cpp)
   target_link_libraries(test_broadcast ${PROJECT_NAME})
+  ament_add_gtest(test_admission_transport test/test_admission_transport.cpp)
+  target_link_libraries(test_admission_transport ${PROJECT_NAME})
 endif()
 
 ament_package()

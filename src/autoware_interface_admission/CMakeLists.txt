@@ -9,18 +9,20 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(autoware_common_msgs_poc REQUIRED)
+find_package(autoware_component_interface_utils_poc REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>")
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
-ament_target_dependencies(${PROJECT_NAME} INTERFACE rclcpp autoware_common_msgs_poc)
+ament_target_dependencies(${PROJECT_NAME} INTERFACE
+  rclcpp autoware_common_msgs_poc autoware_component_interface_utils_poc)
 
 install(DIRECTORY include/ DESTINATION include)
 install(TARGETS ${PROJECT_NAME} EXPORT export_${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
-ament_export_dependencies(rclcpp autoware_common_msgs_poc)
+ament_export_dependencies(rclcpp autoware_common_msgs_poc autoware_component_interface_utils_poc)
 
 add_executable(admission_node src/admission_node.cpp)
 target_link_libraries(admission_node ${PROJECT_NAME})

@@ -3,6 +3,7 @@
 #include "autoware_component_interface_specs_poc/interface_version.hpp"
 #include "autoware_component_interface_specs_poc/manifest_json.hpp"
 #include "autoware_component_interface_specs_poc/version.hpp"
+#include "autoware_component_interface_utils_poc/admission_transport.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -80,11 +81,11 @@ public:
     if (pub_) { return; }  // re-entry guard: a second call is a no-op
     manifest_.owner = owner;
     manifest_.node_name = node->get_fully_qualified_name();
-    // depth 1: one latched manifest per node; the admission subscriber uses depth 100 to retain one-per-publisher
-    rclcpp::QoS qos(1);
-    qos.reliable().transient_local();
-    pub_ = node->create_publisher<autoware_common_msgs_poc::msg::InterfaceManifest>(
-      "/system/interface_version", qos);
+    // Plain endpoint from the shared transport contract: deliberately NOT routed
+    // through NodeAdaptor's register_*/broadcast path (see admission_transport.hpp).
+    using Transport = InterfaceVersionTransport;
+    pub_ = node->create_publisher<Transport::Message>(
+      Transport::name, admission_transport_qos(Transport::publisher_depth));
     pub_->publish(manifest_);
   }
 

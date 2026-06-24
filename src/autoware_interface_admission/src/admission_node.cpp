@@ -1,5 +1,7 @@
 #include "autoware_interface_admission/admission_rule.hpp"
 
+#include "autoware_component_interface_utils_poc/admission_transport.hpp"
+
 #include <rclcpp/rclcpp.hpp>
 
 #include "autoware_common_msgs_poc/msg/admission_result.hpp"
@@ -7,6 +9,8 @@
 
 #include <map>
 #include <string>
+
+namespace utils = autoware::component_interface_utils_poc;
 
 using autoware_common_msgs_poc::msg::AdmissionResult;
 using autoware_common_msgs_poc::msg::InterfaceManifest;
@@ -16,15 +20,15 @@ class AdmissionNode : public rclcpp::Node
 public:
   AdmissionNode() : Node("autoware_interface_admission")
   {
-    rclcpp::QoS in_qos(100);
-    in_qos.reliable().transient_local();
-    sub_ = create_subscription<InterfaceManifest>(
-      "/system/interface_version", in_qos,
+    // Plain endpoints from the shared transport contract (see admission_transport.hpp):
+    // the subscriber retains one-per-publisher, the publisher latches recent verdicts.
+    using InVersion = utils::InterfaceVersionTransport;
+    using OutResult = utils::AdmissionResultTransport;
+    sub_ = create_subscription<InVersion::Message>(
+      InVersion::name, utils::admission_transport_qos(InVersion::subscriber_depth),
       [this](InterfaceManifest::SharedPtr m) { on_manifest(m); });
-
-    rclcpp::QoS out_qos(10);
-    out_qos.reliable().transient_local();
-    pub_ = create_publisher<AdmissionResult>("/system/admission_result", out_qos);
+    pub_ = create_publisher<OutResult::Message>(
+      OutResult::name, utils::admission_transport_qos(OutResult::publisher_depth));
   }
 
 private:
