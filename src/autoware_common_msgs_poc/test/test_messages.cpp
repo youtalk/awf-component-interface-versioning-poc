@@ -8,7 +8,7 @@ TEST(Messages, manifest_holds_provided_and_required)
   m.owner = "autowarefoundation";
   m.node_name = "/provider";
   autoware_common_msgs_poc::msg::ProvidedInterface p;
-  p.declared_topic = "/perception/object_recognition/objects";
+  p.interface_name = "/perception/object_recognition/objects";
   p.major = 2;
   m.provided.push_back(p);
   autoware_common_msgs_poc::msg::RequiredInterface r;

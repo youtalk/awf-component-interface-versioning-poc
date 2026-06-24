@@ -14,7 +14,7 @@ TEST(NodeInterface, accumulates_provided_with_namespace_version)
   const auto & m = iface.manifest();
   ASSERT_EQ(m.provided.size(), 1u);
   EXPECT_EQ(m.provided[0].ns, "perception");
-  EXPECT_EQ(m.provided[0].declared_topic, "/perception/object_recognition/objects");
+  EXPECT_EQ(m.provided[0].interface_name, "/perception/object_recognition/objects");
   EXPECT_EQ(m.provided[0].major, 2);
   EXPECT_EQ(m.provided[0].minor, 1);
 }

@@ -19,12 +19,12 @@ class NodeInterface
 {
 public:
   template <specs::InterfaceSpec S>
-  void register_provided(std::string resolved_topic = S::name)
+  void register_provided(std::string resolved_name = S::name)
   {
     autoware_common_msgs_poc::msg::ProvidedInterface p;
     p.ns = std::string(specs::namespace_of<S>());
-    p.declared_topic = S::name;
-    p.resolved_topic = resolved_topic;
+    p.interface_name = S::name;
+    p.resolved_name = resolved_name;
     p.type_name = specs::type_name_of<S>();
     const auto v = specs::version_of<S>();
     p.major = v.major;
@@ -34,12 +34,12 @@ public:
   }
 
   template <specs::InterfaceSpec S>
-  void register_required(specs::AcceptMajor accept, std::string resolved_topic = S::name)
+  void register_required(specs::AcceptMajor accept, std::string resolved_name = S::name)
   {
     autoware_common_msgs_poc::msg::RequiredInterface r;
     r.ns = std::string(specs::namespace_of<S>());
-    r.declared_topic = S::name;
-    r.resolved_topic = resolved_topic;
+    r.interface_name = S::name;
+    r.resolved_name = resolved_name;
     r.type_name = specs::type_name_of<S>();
     r.accept_major_min = accept.min;
     r.accept_major_max = accept.max;
@@ -48,12 +48,12 @@ public:
   }
 
   template <specs::ServiceSpec S>
-  void register_provided_service(std::string resolved_topic = S::name)
+  void register_provided_service(std::string resolved_name = S::name)
   {
     autoware_common_msgs_poc::msg::ProvidedInterface p;
     p.ns = std::string(specs::namespace_of<S>());
-    p.declared_topic = S::name;
-    p.resolved_topic = resolved_topic;
+    p.interface_name = S::name;
+    p.resolved_name = resolved_name;
     p.type_name = specs::type_name_of<S>();
     const auto v = specs::version_of<S>();
     p.major = v.major;
@@ -63,12 +63,12 @@ public:
   }
 
   template <specs::ServiceSpec S>
-  void register_required_service(std::string resolved_topic = S::name)
+  void register_required_service(std::string resolved_name = S::name)
   {
     autoware_common_msgs_poc::msg::RequiredInterface r;
     r.ns = std::string(specs::namespace_of<S>());
-    r.declared_topic = S::name;
-    r.resolved_topic = resolved_topic;
+    r.interface_name = S::name;
+    r.resolved_name = resolved_name;
     r.type_name = specs::type_name_of<S>();
     const auto v = specs::version_of<S>();
     r.accept_major_min = v.major;

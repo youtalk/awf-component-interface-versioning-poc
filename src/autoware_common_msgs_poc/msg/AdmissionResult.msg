@@ -14,6 +14,6 @@ uint16 MINOR_MISMATCH = 2
 uint16 TOPIC_MISMATCH = 3   # version-compatible, but remap left provider/consumer on disjoint wire topics
 
 string consumer_node
-string declared_topic
+string interface_name
 string provider_node
 uint16 code

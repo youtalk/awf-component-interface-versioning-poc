@@ -30,7 +30,7 @@ def main():
     verdict = None
     while time.time() < deadline:
         rclpy.spin_once(node, timeout_sec=0.5)
-        matches = [r for r in received if r.declared_topic == IF_NAME]
+        matches = [r for r in received if r.interface_name == IF_NAME]
         if matches:
             verdict = matches[-1]
             break

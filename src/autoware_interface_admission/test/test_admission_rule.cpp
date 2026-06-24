@@ -22,8 +22,8 @@ InterfaceManifest provider(uint16_t major, uint16_t minor, const std::string & r
   InterfaceManifest m;
   m.node_name = "/provider";
   ProvidedInterface p;
-  p.declared_topic = kIf;
-  p.resolved_topic = resolved;
+  p.interface_name = kIf;
+  p.resolved_name = resolved;
   p.major = major;
   p.minor = minor;
   m.provided.push_back(p);
@@ -36,8 +36,8 @@ InterfaceManifest consumer(
   InterfaceManifest m;
   m.node_name = "/consumer";
   RequiredInterface r;
-  r.declared_topic = kIf;
-  r.resolved_topic = resolved;
+  r.interface_name = kIf;
+  r.resolved_name = resolved;
   r.accept_major_min = lo;
   r.accept_major_max = hi;
   r.min_minor = min_minor;
@@ -78,7 +78,7 @@ TEST(AdmissionRule, rejects_remap_topic_mismatch)
 {
   // Same logical IF + compatible MAJOR, but the provider's wire topic was remapped away.
   // Logical-name-only admission (matching on Spec::name alone) would false-accept; the
-  // resolved_topic comparison catches the disjoint wiring.
+  // resolved_name comparison catches the disjoint wiring.
   const auto results = adm::evaluate(
     {provider(2, 1, "/perception/object_recognition/objects_remapped"), consumer(2, 2)});
   ASSERT_EQ(results.size(), 1u);

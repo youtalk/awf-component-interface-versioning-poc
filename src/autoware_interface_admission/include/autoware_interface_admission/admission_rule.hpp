@@ -25,14 +25,14 @@ inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate(
   std::unordered_map<std::string, std::vector<ProviderEntry>> providers;
   for (const auto & m : manifests) {
     for (const auto & p : m.provided) {
-      providers[p.declared_topic].push_back({m.node_name, p});
+      providers[p.interface_name].push_back({m.node_name, p});
     }
   }
 
   std::vector<AdmissionResult> results;
   for (const auto & m : manifests) {
     for (const auto & r : m.required) {
-      const auto it = providers.find(r.declared_topic);
+      const auto it = providers.find(r.interface_name);
       if (it == providers.end() || it->second.empty()) {
         continue;  // no provider yet — nothing to admit
       }
@@ -44,7 +44,7 @@ inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate(
           r.accept_major_min <= entry.p.major && entry.p.major <= r.accept_major_max;
         const bool minor_ok = (r.min_minor == 0) || (entry.p.minor >= r.min_minor);
         if (major_ok && minor_ok) {
-          if (entry.p.resolved_topic == r.resolved_topic) {
+          if (entry.p.resolved_name == r.resolved_name) {
             wired = &entry;
             break;
           }
@@ -56,7 +56,7 @@ inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate(
 
       AdmissionResult res;
       res.consumer_node = m.node_name;
-      res.declared_topic = r.declared_topic;
+      res.interface_name = r.interface_name;
       if (wired != nullptr) {
         res.code = AdmissionResult::ACCEPTED;
         res.provider_node = wired->node;

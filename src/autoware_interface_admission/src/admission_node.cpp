@@ -43,11 +43,11 @@ private:
       if (res.code == AdmissionResult::ACCEPTED) {
         RCLCPP_INFO(
           get_logger(), "ADMIT %s <- %s (%s)", res.consumer_node.c_str(),
-          res.provider_node.c_str(), res.declared_topic.c_str());
+          res.provider_node.c_str(), res.interface_name.c_str());
       } else {
         RCLCPP_WARN(
           get_logger(), "REJECT %s <- %s (%s): %s [observe-only]", res.consumer_node.c_str(),
-          res.provider_node.c_str(), res.declared_topic.c_str(),
+          res.provider_node.c_str(), res.interface_name.c_str(),
           autoware::interface_admission::verdict_text(res.code));
       }
     }

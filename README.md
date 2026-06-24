@@ -41,7 +41,7 @@ docker compose up
 | C3 | one manifest auto-derived from the `Specs` tuple + the `create_*` choke point | `test_manifest` + `test_accumulate` |
 | C4 | `transient_local` handshake discovered across containers (incl. late join) | inter-container accept + late-join run |
 | C5 | MAJOR mismatch rejected across containers → `AdmissionResult.code = MAJOR_MISMATCH` (non-zero) | inter-container reject run |
-| C6 | a launch-time remap leaves a version-compatible provider/consumer on disjoint wire topics → admission flags `AdmissionResult.code = TOPIC_MISMATCH` (the false-accept that logical-name-only matching would miss; manifest carries `declared_topic` + remap-resolved `resolved_topic`) | `test_remap_topic_mismatch` (launch) + `rejects_remap_topic_mismatch` (gtest) |
+| C6 | a launch-time remap leaves a version-compatible provider/consumer on disjoint wire topics → admission flags `AdmissionResult.code = TOPIC_MISMATCH` (the false-accept that logical-name-only matching would miss; manifest carries `interface_name` + remap-resolved `resolved_name`) | `test_remap_topic_mismatch` (launch) + `rejects_remap_topic_mismatch` (gtest) |
 
 ## Layout
 

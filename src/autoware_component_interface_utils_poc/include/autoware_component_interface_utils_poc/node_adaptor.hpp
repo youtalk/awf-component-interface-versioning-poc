@@ -22,9 +22,9 @@ public:
   {
   }
 
-  // create the entity first, then register with its remap-resolved topic name
-  // (get_topic_name() returns the FQN after launch-time remapping) so the manifest
-  // records both the logical Spec::name (contract identity) and the actual wire topic.
+  // create the entity first, then register with its remap-resolved name
+  // (get_topic_name() / get_service_name() return the FQN after launch-time remapping) so the
+  // manifest records both the logical Spec::name (contract identity) and the actual resolved name.
   template <specs::InterfaceSpec S>
   typename rclcpp::Publisher<typename S::Message>::SharedPtr create_publisher()
   {

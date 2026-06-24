@@ -44,7 +44,7 @@ def reject_description():
 
 def _remap_description():
     # The provider's perception topic is remapped away; the consumer is not. Same logical
-    # Spec (declared_topic) and compatible MAJOR, but disjoint resolved wire topics — the
+    # Spec (interface_name) and compatible MAJOR, but disjoint resolved wire topics — the
     # false-accept that logical-name-only admission would miss.
     return launch.LaunchDescription(
         [
@@ -80,7 +80,7 @@ def _collect_result(timeout_s):
     result = None
     while time.time() < deadline:
         rclpy.spin_once(node, timeout_sec=0.5)
-        matches = [r for r in received if r.declared_topic == IF_NAME]
+        matches = [r for r in received if r.interface_name == IF_NAME]
         if matches:
             result = matches[-1]
             # keep spinning briefly to let the latest verdict settle
