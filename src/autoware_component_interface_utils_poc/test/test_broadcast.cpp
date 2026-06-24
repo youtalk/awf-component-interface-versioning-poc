@@ -23,7 +23,7 @@ TEST(Broadcast, manifest_reaches_late_subscriber_via_transient_local)
   auto iface = std::make_shared<utils::NodeInterface>();
   utils::NodeAdaptor adaptor(provider.get(), iface);
   auto pub = adaptor.create_publisher<specs::perception::ObjectRecognition>();
-  iface->broadcast(provider.get(), "autoware");
+  iface->broadcast(provider.get(), "autowarefoundation");
 
   // Subscriber created AFTER the broadcast: transient_local must still deliver it.
   auto listener = std::make_shared<rclcpp::Node>("listener");

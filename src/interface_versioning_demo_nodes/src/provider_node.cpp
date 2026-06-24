@@ -20,7 +20,7 @@ public:
     iface_ = std::make_shared<utils::NodeInterface>();
     utils::NodeAdaptor adaptor(this, iface_);
     pub_ = adaptor.create_publisher<specs::perception::ObjectRecognition>();
-    iface_->broadcast(this, "autoware");
+    iface_->broadcast(this, "autowarefoundation");
     timer_ = create_wall_timer(
       std::chrono::milliseconds(200), [this]() {
         autoware_perception_msgs::msg::PredictedObjects msg;

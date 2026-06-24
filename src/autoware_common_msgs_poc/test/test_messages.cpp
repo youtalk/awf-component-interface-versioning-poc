@@ -5,7 +5,7 @@
 TEST(Messages, manifest_holds_provided_and_required)
 {
   autoware_common_msgs_poc::msg::InterfaceManifest m;
-  m.owner = "autoware";
+  m.owner = "autowarefoundation";
   m.node_name = "/provider";
   autoware_common_msgs_poc::msg::ProvidedInterface p;
   p.interface_name = "/perception/object_recognition/objects";

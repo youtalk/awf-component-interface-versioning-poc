@@ -27,7 +27,7 @@ public:
         }
       },
       specs::accept_major(static_cast<std::uint16_t>(consumer_major)));
-    iface_->broadcast(this, "autoware");
+    iface_->broadcast(this, "autowarefoundation");
     RCLCPP_INFO(get_logger(), "consumer requires perception accept_major(%d)", consumer_major);
   }
 

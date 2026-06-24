@@ -11,7 +11,7 @@
 
 namespace autoware::component_interface_specs_poc
 {
-static constexpr char owner[] = "autoware";  // per-package, in one place
+static constexpr char owner[] = "autowarefoundation";  // GitHub org name; per-package, in one place
 }
 
 namespace autoware::component_interface_specs_poc::perception
