@@ -42,6 +42,33 @@ def reject_description():
     return _description(3)
 
 
+def _remap_description():
+    # The provider's perception topic is remapped away; the consumer is not. Same logical
+    # Spec (declared_topic) and compatible MAJOR, but disjoint resolved wire topics — the
+    # false-accept that logical-name-only admission would miss.
+    return launch.LaunchDescription(
+        [
+            Node(
+                package="interface_versioning_demo_nodes",
+                executable="provider_node",
+                remappings=[(IF_NAME, IF_NAME + "_remapped")],
+            ),
+            Node(
+                package="interface_versioning_demo_nodes",
+                executable="consumer_node",
+                parameters=[{"consumer_major": 2}],
+            ),
+            Node(package="autoware_interface_admission", executable="admission_node"),
+            launch_pytest.actions.ReadyToTest(),
+        ]
+    )
+
+
+@launch_pytest.fixture
+def remap_description():
+    return _remap_description()
+
+
 def _collect_result(timeout_s):
     rclpy.init()
     node = rclpy.create_node("checker")
@@ -53,7 +80,7 @@ def _collect_result(timeout_s):
     result = None
     while time.time() < deadline:
         rclpy.spin_once(node, timeout_sec=0.5)
-        matches = [r for r in received if r.interface_name == IF_NAME]
+        matches = [r for r in received if r.declared_topic == IF_NAME]
         if matches:
             result = matches[-1]
             # keep spinning briefly to let the latest verdict settle
@@ -76,3 +103,11 @@ def test_reject_higher_major():
     result = _collect_result(20)
     assert result is not None, "no AdmissionResult for the perception interface"
     assert result.code == AdmissionResult.MAJOR_MISMATCH
+
+
+@pytest.mark.launch(fixture=remap_description)
+def test_remap_topic_mismatch():
+    # version-compatible provider/consumer, but the remap left them on disjoint wire topics
+    result = _collect_result(20)
+    assert result is not None, "no AdmissionResult for the perception interface"
+    assert result.code == AdmissionResult.TOPIC_MISMATCH

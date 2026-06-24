@@ -45,7 +45,9 @@ TEST(Broadcast, manifest_reaches_late_subscriber_via_transient_local)
 
   EXPECT_TRUE(received);
   ASSERT_EQ(got.provided.size(), 1u);
-  EXPECT_EQ(got.provided[0].interface_name, "/perception/object_recognition/objects");
+  EXPECT_EQ(got.provided[0].declared_topic, "/perception/object_recognition/objects");
+  // no remap here, so the resolved wire topic equals the logical Spec::name
+  EXPECT_EQ(got.provided[0].resolved_topic, "/perception/object_recognition/objects");
   EXPECT_EQ(got.provided[0].major, 2);
 
   rclcpp::shutdown();
