@@ -29,6 +29,10 @@ add_executable(admission_node src/admission_node.cpp)
 target_link_libraries(admission_node ${PROJECT_NAME})
 install(TARGETS admission_node DESTINATION lib/${PROJECT_NAME})
 
+add_executable(manifest_admit src/manifest_admit.cpp)
+target_link_libraries(manifest_admit ${PROJECT_NAME})
+install(TARGETS manifest_admit DESTINATION lib/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   ament_add_gtest(test_admission_rule test/test_admission_rule.cpp)
