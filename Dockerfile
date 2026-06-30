@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ros-jazzy-rmw-cyclonedds-cpp \
       ros-jazzy-launch-testing-ament-cmake \
       ros-jazzy-launch-pytest \
+      nlohmann-json3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp

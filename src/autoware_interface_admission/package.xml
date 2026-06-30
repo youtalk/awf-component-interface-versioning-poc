@@ -11,6 +11,7 @@
 
   <depend>rclcpp</depend>
   <depend>autoware_common_msgs_poc</depend>
+  <depend>nlohmann-json-dev</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
 
