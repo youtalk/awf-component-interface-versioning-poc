@@ -30,6 +30,8 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   ament_add_gtest(test_admission_rule test/test_admission_rule.cpp)
   target_link_libraries(test_admission_rule ${PROJECT_NAME})
+  ament_add_gtest(test_manifest_io test/test_manifest_io.cpp)
+  target_link_libraries(test_manifest_io ${PROJECT_NAME})
 endif()
 
 ament_package()
