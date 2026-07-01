@@ -12,6 +12,7 @@ uint16 ACCEPTED = 0
 uint16 MAJOR_MISMATCH = 1
 uint16 MINOR_MISMATCH = 2
 uint16 TOPIC_MISMATCH = 3   # version-compatible, but remap left provider/consumer on disjoint wire topics
+uint16 NO_PROVIDER = 4      # deploy-time only: a required interface has no provider in the composed set (the runtime observe-mode handshake never emits this — a provider may simply not have started yet)
 
 string consumer_node
 string interface_name
