@@ -29,7 +29,13 @@ int main(int argc, char ** argv)
     docs.push_back(ss.str());
   }
 
-  const auto results = autoware::interface_admission::evaluate_jsons(docs);
+  std::vector<autoware_common_msgs_poc::msg::AdmissionResult> results;
+  try {
+    results = autoware::interface_admission::evaluate_jsons(docs);
+  } catch (const std::exception & e) {
+    std::cerr << "manifest_admit: failed to parse manifest: " << e.what() << "\n";
+    return 2;
+  }
   for (const auto & r : results) {
     std::cout << r.consumer_node << " <- " << r.provider_node << " [" << r.interface_name
               << "]: " << autoware::interface_admission::verdict_text(r.code) << " (code=" << r.code
