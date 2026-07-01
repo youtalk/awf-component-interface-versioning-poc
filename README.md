@@ -50,9 +50,10 @@ CONSUMER_IMAGE=civ-poc:consumer-major3 ./deploy_check.sh compose.deploy-check.ya
 CONSUMER_IMAGE=civ-poc:consumer-major2 ./deploy_check.sh compose.deploy-check.yaml
 ```
 
-The gate reads manifests with `docker inspect` (pure image metadata) and runs the **same**
-`evaluate()` admission rule as the runtime handshake. Remap-resolved (`resolved_name`) matching
-stays with the runtime path (C6); the deploy-time gate matches on version + interface name.
+The gate reads manifests with `docker inspect` (pure image metadata, no container start) and runs
+the **same** `evaluate()` admission rule as the runtime handshake, via one short-lived
+`manifest_admit` container. Remap-resolved (`resolved_name`) matching stays with the runtime path
+(C6); the deploy-time gate matches on version + interface name.
 
 ## Claim → evidence map
 
@@ -64,9 +65,9 @@ stays with the runtime path (C6); the deploy-time gate matches on version + inte
 | C4 | `transient_local` handshake discovered across containers (incl. late join) | inter-container accept + late-join run |
 | C5 | MAJOR mismatch rejected across containers → `AdmissionResult.code = MAJOR_MISMATCH` (non-zero) | inter-container reject run |
 | C6 | a launch-time remap leaves a version-compatible provider/consumer on disjoint wire topics → admission flags `AdmissionResult.code = TOPIC_MISMATCH` (the false-accept that logical-name-only matching would miss; manifest carries `interface_name` + remap-resolved `resolved_name`) | `test_remap_topic_mismatch` (launch) + `rejects_remap_topic_mismatch` (gtest) |
-| C7 | each component image carries its IF manifest as an OCI label (`org.autoware.interface_manifest`) + `/opt/autoware/manifest.json`, retrievable **without starting the container and without source in the image** | `docker inspect -f '{{ index .Config.Labels "org.autoware.interface_manifest" }}' <image>` after `./bake_image.sh` |
+| C7 | each component image carries its IF manifest as an OCI label (`org.autoware.interface_manifest`) + `/opt/autoware/manifest.json`, retrievable via `docker inspect` **without starting the container** — the label read is pure image metadata and needs no source parsing (so the same mechanism works on a binary-only third-party image) | `docker inspect -f '{{ index .Config.Labels "org.autoware.interface_manifest" }}' <image>` after `./bake_image.sh` |
 | C8 | `manifest_admit` reuses the runtime `evaluate()` over embedded manifests → the C5 `MAJOR_MISMATCH` reproduced statically | `test_manifest_admit` (gtest) + `manifest_admit` exit code |
-| C9 | an incompatible image set is rejected **before `docker compose up`** (no ROS / DDS / container start), with the same verdict as the runtime handshake | `./deploy_check.sh compose.deploy-check.yaml` → exit 1 (reject) / 0 (accept) |
+| C9 | an incompatible image set is rejected **before `docker compose up`** — no provider/consumer/admission service and no DDS handshake starts (the gate runs one short-lived `manifest_admit` container), with the same verdict as the runtime handshake | `./deploy_check.sh compose.deploy-check.yaml` → exit 1 (reject) / 0 (accept) |
 
 ## Layout
 
