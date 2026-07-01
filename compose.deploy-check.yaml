@@ -1,0 +1,9 @@
+# Fixture for the deploy-time gate. deploy_check.sh inspects these images' manifests
+# and admits them BEFORE any `docker compose up`. Swap CONSUMER_IMAGE to flip the verdict:
+#   civ-poc:consumer-major2  -> compatible (accept)
+#   civ-poc:consumer-major3  -> incompatible (reject)
+services:
+  provider:
+    image: civ-poc:provider
+  consumer:
+    image: ${CONSUMER_IMAGE:-civ-poc:consumer-major3}
