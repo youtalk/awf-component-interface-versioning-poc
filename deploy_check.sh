@@ -27,8 +27,15 @@ fi
 i=0
 for img in "${images[@]}"; do
   echo "[deploy_check] inspecting ${img}"
-  manifest="$(docker inspect -f "{{ index .Config.Labels \"${LABEL}\" }}" "${img}" 2>/dev/null || true)"
-  if [ -z "${manifest}" ]; then
+  # Keep `docker inspect` failure (image not present locally, daemon down) distinct from an image
+  # that exists but carries no label — the former is an operational error, not a conformance one.
+  if ! manifest="$(docker inspect -f "{{ index .Config.Labels \"${LABEL}\" }}" "${img}" \
+      2>"${workdir}/inspect_err")"; then
+    echo "deploy_check: 'docker inspect ${img}' failed — image not present locally or Docker unavailable" >&2
+    sed 's/^/  docker: /' "${workdir}/inspect_err" >&2
+    exit 2
+  fi
+  if [ -z "${manifest}" ] || [ "${manifest}" = "<no value>" ]; then
     echo "deploy_check: image ${img} has no ${LABEL} label — not IF-versioning conformant" >&2
     exit 2
   fi
