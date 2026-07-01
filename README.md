@@ -38,6 +38,8 @@ Bake each component's manifest into its image, then admit the image set **before
 container starts — catching a mismatch at deploy-config time instead of at runtime.
 
 ```bash
+docker compose build checks   # build the admission tool image (ADMIT_TOOL_IMAGE default)
+
 # Bake provider + two consumer variants (manifest baked as an OCI label, no app boot)
 ./bake_image.sh provider 2 civ-poc:provider
 ./bake_image.sh consumer 2 civ-poc:consumer-major2
@@ -53,7 +55,10 @@ CONSUMER_IMAGE=civ-poc:consumer-major2 ./deploy_check.sh compose.deploy-check.ya
 The gate reads manifests with `docker inspect` (pure image metadata, no container start) and runs
 the **same** `evaluate()` admission rule as the runtime handshake, via one short-lived
 `manifest_admit` container. Remap-resolved (`resolved_name`) matching stays with the runtime path
-(C6); the deploy-time gate matches on version + interface name.
+(C6); the deploy-time gate matches on version + interface name. The gate runs `manifest_admit`
+from a dedicated tool image (`ADMIT_TOOL_IMAGE`, default the repo image, overridable), so an image
+under test only needs to carry the `org.autoware.interface_manifest` label — a binary-only
+third-party image works.
 
 ## Claim → evidence map
 
