@@ -7,7 +7,9 @@
 
 #include <nlohmann/json.hpp>
 
+#include <cstdint>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace autoware::interface_admission
@@ -46,7 +48,11 @@ inline autoware_common_msgs_poc::msg::InterfaceManifest from_json(const std::str
   return m;
 }
 
-// The deploy-time trigger of the SAME rule: parse N manifests, then run evaluate().
+// The deploy-time trigger of the SAME rule: parse N manifests, then run evaluate(). Unlike the
+// runtime observe-mode handshake (where a provider may not have started yet, so evaluate() skips
+// a required interface that currently has no provider), the deploy configuration is complete — a
+// required interface with no provider anywhere in the set is a hard failure, reported here as
+// NO_PROVIDER (which the runtime evaluate() deliberately never emits).
 inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate_jsons(
   const std::vector<std::string> & docs)
 {
@@ -55,7 +61,26 @@ inline std::vector<autoware_common_msgs_poc::msg::AdmissionResult> evaluate_json
   for (const auto & d : docs) {
     manifests.push_back(from_json(d));
   }
-  return evaluate(manifests);
+  auto results = evaluate(manifests);
+
+  std::unordered_set<std::string> provided_names;
+  for (const auto & m : manifests) {
+    for (const auto & p : m.provided) {
+      provided_names.insert(p.interface_name);
+    }
+  }
+  for (const auto & m : manifests) {
+    for (const auto & r : m.required) {
+      if (provided_names.find(r.interface_name) == provided_names.end()) {
+        autoware_common_msgs_poc::msg::AdmissionResult res;
+        res.consumer_node = m.node_name;
+        res.interface_name = r.interface_name;
+        res.code = autoware_common_msgs_poc::msg::AdmissionResult::NO_PROVIDER;
+        results.push_back(res);
+      }
+    }
+  }
+  return results;
 }
 
 inline bool any_rejected(
@@ -67,6 +92,16 @@ inline bool any_rejected(
     }
   }
   return false;
+}
+
+// Deploy-time verdict text: covers NO_PROVIDER (deploy-only) and defers to the shared
+// verdict_text() (admission_rule.hpp) for the codes the runtime handshake also produces.
+inline const char * deploy_verdict_text(std::uint16_t code)
+{
+  if (code == autoware_common_msgs_poc::msg::AdmissionResult::NO_PROVIDER) {
+    return "required interface has no provider in the set";
+  }
+  return verdict_text(code);
 }
 
 }  // namespace autoware::interface_admission

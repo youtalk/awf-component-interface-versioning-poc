@@ -79,3 +79,14 @@ TEST(ManifestAdmit, rejects_incompatible_image_set)
   EXPECT_EQ(results[0].code, AdmissionResult::MAJOR_MISMATCH);
   EXPECT_TRUE(adm::any_rejected(results));
 }
+
+TEST(ManifestAdmit, rejects_required_with_no_provider)
+{
+  // A deploy set where the consumer requires the interface but NO image provides it. The runtime
+  // observe-mode evaluate() skips this (a provider may not have started); the deploy-time gate
+  // must reject it because the whole set is known up front.
+  const auto results = adm::evaluate_jsons({consumer_json(2)});
+  ASSERT_EQ(results.size(), 1u);
+  EXPECT_EQ(results[0].code, AdmissionResult::NO_PROVIDER);
+  EXPECT_TRUE(adm::any_rejected(results));
+}

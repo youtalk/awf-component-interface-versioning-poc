@@ -38,7 +38,7 @@ int main(int argc, char ** argv)
   }
   for (const auto & r : results) {
     std::cout << r.consumer_node << " <- " << r.provider_node << " [" << r.interface_name
-              << "]: " << autoware::interface_admission::verdict_text(r.code) << " (code=" << r.code
+              << "]: " << autoware::interface_admission::deploy_verdict_text(r.code) << " (code=" << r.code
               << ")\n";
   }
   if (results.empty()) {
